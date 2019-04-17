@@ -1,8 +1,7 @@
 int potPin = 0;    // A0 input for pot
 int potVal = 0;       // variable to store the value coming from the sensor
 
-int motorDuty = 0;
-int lastMotorChange = millis();
+int motorDuty = 0; // 0-100 represents what % of the time the motor signal should be HIGH
 int motorPin = 5; // D1 for output to motor
 
 void setup() {
@@ -10,7 +9,6 @@ void setup() {
   
   pinMode(motorPin, OUTPUT);  // declare the motorPin as an OUTPUT
   digitalWrite(motorPin, HIGH);
-  lastMotorChange = millis();
 }
 
 void loop() {
@@ -18,17 +16,7 @@ void loop() {
   motorDuty = map(potVal, 0, 1023, 0, 100); // translate the pot value into a useful % duty cycle
   Serial.println(motorDuty);
 
-  // delay for high
-  digitalWrite(motorPin, HIGH);
-  delay(motorDuty);
-//  if (millis() > lastMotorChange + motorDuty) {
-//    digitalWrite(motorPin, LOW);
-//    lastMotorChange = millis();
-//  }
-  // delay for low
-  digitalWrite(motorPin, LOW);
-  delay(100-motorDuty);
-//  else{
-//    digitalWrite(motorPin, HIGH);
-//  }
+  if ((millis() % 100) > motorDuty) digitalWrite(motorPin, LOW);
+  else digitalWrite(motorPin, HIGH);
+  
 }
