@@ -8,18 +8,20 @@ FASTLED_USING_NAMESPACE
 #define CLOCK_PIN   4 // maps to D2
 #define LED_TYPE    APA102
 #define COLOR_ORDER RGB
-#define NUM_LEDS    20
+#define NUM_LEDS    100
 CRGB leds[NUM_LEDS];
 
-#define BRIGHTNESS 25 // 25/255 = 1/10th brightness
-#define FRAMES_PER_SECOND 120
+#define BRIGHTNESS 5 // 25/255 = 1/10th brightness
+#define FRAMES_PER_SECOND 1000000
 #define CHANGE_PATTERN_SECONDS 10 // automatically change to the next pattern after this many seconds
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
+int fps = 0;
+
 // setup function. runs once, then loop() runs forever
 void setup() {
-  
+  Serial.begin(9600);
   // tell FastLED about the LED strip configuration
   FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER, DATA_RATE_MHZ(12)>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   
@@ -30,7 +32,8 @@ void setup() {
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm };
+//SimplePatternList gPatterns = { rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm };
+SimplePatternList gPatterns = { confetti, sinelon, juggle };
 
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 uint32_t lastPatternChange = millis(); // keep track of the last time we changed patterns
@@ -45,11 +48,18 @@ void loop() {
   // send the 'leds' array out to the actual LED strip
   FastLED.show();  
   // insert a delay to keep the framerate modest
-  FastLED.delay(1000/FRAMES_PER_SECOND); 
+  //FastLED.delay(1000/FRAMES_PER_SECOND); 
 
+  fps++;
   // do some periodic updates
   EVERY_N_MILLISECONDS(20) { gHue++; } // slowly cycle the "base color" through the rainbow
   EVERY_N_SECONDS(CHANGE_PATTERN_SECONDS) { patternTimer(); } // change patterns periodically
+  EVERY_N_SECONDS(1) { printFPS(); }
+}
+
+void printFPS() {
+  Serial.println(fps);
+  fps = 0;
 }
 
 void patternTimer() {
