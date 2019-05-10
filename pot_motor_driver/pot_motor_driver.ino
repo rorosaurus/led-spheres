@@ -20,3 +20,6 @@ void loop() {
   else digitalWrite(motorPin, HIGH);
   
 }
+
+// TODO: lowpri - could try analogWrite() for less jitter?  or smoother cap?
+// https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/

@@ -1,0 +1,23 @@
+-----
+Notes
+-----
+-we are current limited by the IO pins, can't reasonably drive motors from them directly
+-
+
+
+----------------
+Slip Ring Wiring
+----------------
+red - 5V
+black - GND
+yellow - CLOCK
+orange - DATA
+green - MOTOR_1
+brown - MOTOR_2
+
+
+----------
+Power Draw
+----------
+20 LEDs = 0.471 W
+20 LEDs + 3.3V motor spinning = 4.2W
